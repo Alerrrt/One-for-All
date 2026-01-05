@@ -1,0 +1,16 @@
+{
+    "name": "conversion-engine-worker",
+    "version": "1.0.0",
+    "description": "Worker for File Conversion Engine",
+    "main": "src/processor.js",
+    "scripts": {
+        "start": "node src/processor.js",
+        "dev": "nodemon src/processor.js"
+    },
+    "dependencies": {
+        "bull": "^4.12.0"
+    },
+    "devDependencies": {
+        "nodemon": "^3.0.3"
+    }
+}

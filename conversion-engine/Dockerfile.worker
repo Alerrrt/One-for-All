@@ -1,0 +1,28 @@
+FROM node:20
+
+# Install conversion tools and dependencies
+RUN apt-get update && apt-get install -y \
+    ffmpeg \
+    imagemagick \
+    pandoc \
+    ghostscript \
+    wkhtmltopdf \
+    libmagic1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Fix ImageMagick policy for PDF conversion
+RUN if [ -f /etc/ImageMagick-6/policy.xml ]; then \
+    sed -i 's/rights="none" pattern="PDF"/rights="read|write" pattern="PDF"/g' /etc/ImageMagick-6/policy.xml; \
+    fi
+
+WORKDIR /app/worker
+
+COPY workers/package*.json ./
+RUN npm install --production
+
+COPY workers/ .
+
+# Create data directories
+RUN mkdir -p /data/inputs /data/outputs /data/temp
+
+CMD ["npm", "start"]
