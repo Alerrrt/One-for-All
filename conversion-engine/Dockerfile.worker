@@ -1,28 +1,43 @@
-FROM node:20
+# Phase 1 Worker - Supports all Phase 1 converters + existing ones
+# Includes: FFmpeg, ImageMagick, Pandoc, Dasel, libheif, Inkscape, LibreOffice
+FROM node:20-bullseye
 
-# Install conversion tools and dependencies
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
+    # Existing converters
     ffmpeg \
     imagemagick \
     pandoc \
-    ghostscript \
-    wkhtmltopdf \
-    libmagic1 \
+    # Phase 1 NEW converters
+    inkscape \
+    libheif-examples \
+    libreoffice-writer \
+    libreoffice-calc \
+    libreoffice-impress \
+    wget \
     && rm -rf /var/lib/apt/lists/*
 
-# Fix ImageMagick policy for PDF conversion
-RUN if [ -f /etc/ImageMagick-6/policy.xml ]; then \
-    sed -i 's/rights="none" pattern="PDF"/rights="read|write" pattern="PDF"/g' /etc/ImageMagick-6/policy.xml; \
-    fi
+# Install Dasel (binary release, lightweight)
+RUN wget -qO /usr/local/bin/dasel https://github.com/TomWright/dasel/releases/latest/download/dasel_linux_amd64 \
+    && chmod +x /usr/local/bin/dasel
 
-WORKDIR /app/worker
+# Create non-root user for security
+RUN useradd -m -u 1000 converter && \
+    mkdir -p /data/inputs /data/outputs /data/temp && \
+    chown -R converter:converter /data
 
+# Copy worker code
+WORKDIR /app
 COPY workers/package*.json ./
-RUN npm install --production
+RUN npm ci --only=production
 
 COPY workers/ .
 
-# Create data directories
-RUN mkdir -p /data/inputs /data/outputs /data/temp
+# Switch to non-root user
+USER converter
 
-CMD ["npm", "start"]
+CMD ["node", "src/processor.js"]
+
+# Healthcheck
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD node -e "require('http').get('http://localhost:3001/health', (r) => process.exit(r.statusCode === 200 ? 0 : 1))" || exit 1

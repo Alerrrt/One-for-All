@@ -7,10 +7,17 @@ Open-source toolkit for local processing. Your data never leaves your machine.
 Convert 250+ file formats locally. No cloud, no tracking, no limits.
 
 **Features**
-- Images, video, audio, documents
+- **Images:** PNG, JPG, WebP, GIF, BMP, TIFF, ICO, **HEIC**, **HEIF**, **SVG**, **EPS**, **EMF**, **WMF**
+- **Video:** MP4, WebM, MKV, AVI, MOV, FLV
+- **Audio:** MP3, WAV, FLAC, AAC, OGG, M4A
+- **Documents:** PDF, DOCX, **DOC**, **ODT**, **RTF**, **EPUB**, **HTML**, **Pages**, **WordPerfect (WPD)**, TXT
+- **Data:** **JSON**, **YAML**, **TOML**, **XML**, **CSV**
+- **Vector Graphics:** **SVG**, **PDF**, **EPS**, **PS**, **EMF**, **WMF**, **DXF**
+- **200+ total formats** supported
 - Real-time progress tracking
 - Bulk processing with ZIP download
 - Docker deployment
+- **Phase 1 Complete:** Dasel, libheif, Inkscape, LibreOffice converters active
 
 **Privacy First**
 - 100% local processing
@@ -26,6 +33,11 @@ docker-compose up -d
 ```
 
 See [conversion-engine/README.md](conversion-engine/README.md) for details.
+
+**🎉 NEW: Phase 1 ConvertX Integration Complete**
+- 4 new converters added (Dasel, libheif, Inkscape, LibreOffice)
+- Format support expanded from 40 → 200+ formats
+- See [conversion-engine/PHASE1_DEPLOYMENT.md](conversion-engine/PHASE1_DEPLOYMENT.md) for deployment guide
 
 ---
 
